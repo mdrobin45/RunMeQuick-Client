@@ -33,7 +33,7 @@ export const compilerResult = async (token) => {
 };
 
 // Request server to compile source code
-export const codeSubmission = async (sourceCode) => {
+export const codeSubmission = async (sourceCode, languageId) => {
    // Server request additional details
    const options = {
       method: "POST",
@@ -49,7 +49,7 @@ export const codeSubmission = async (sourceCode) => {
          "X-RapidAPI-Host": import.meta.env.VITE_RAPID_HOST,
       },
       data: {
-         language_id: 63,
+         language_id: languageId,
          source_code: btoa(sourceCode),
          stdin: "",
       },

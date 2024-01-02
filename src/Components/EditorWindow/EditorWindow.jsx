@@ -1,6 +1,6 @@
 import Editor from "@monaco-editor/react";
 
-const EditorWindow = ({ editorValue, handleEditorChange }) => {
+const EditorWindow = ({ editorValue, handleEditorChange, lan }) => {
    return (
       <div className="overlay mt-6 rounded-md overflow-hidden h-full shadow-4xl">
          <h2 className="text-2xl font-bold pb-2">Editor</h2>
@@ -8,8 +8,7 @@ const EditorWindow = ({ editorValue, handleEditorChange }) => {
             <Editor
                height="80vh"
                width={`100%`}
-               defaultLanguage="javascript"
-               language="javascript"
+               language={lan || "javascript"}
                value={editorValue}
                theme="vs-dark"
                defaultValue="// some comment"
