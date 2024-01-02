@@ -1,6 +1,6 @@
 import { useState } from "react";
 import Select from "react-select";
-import { codeSubmission } from "../../API/ServerRequest";
+import { codeSubmission, compilerResult } from "../../API/ServerRequest";
 import EditorWindow from "../../Components/EditorWindow/EditorWindow";
 import Output from "../../Components/Output/Output";
 
@@ -12,6 +12,7 @@ const options = [
 
 const Landing = () => {
    const [editorValue, setEditorValue] = useState("");
+   const [outPutDetails, setOutputDetails] = useState(null);
 
    // Get source code from editor
    const handleEditorChange = (value) => {
@@ -20,7 +21,12 @@ const Landing = () => {
 
    // Code execute by button click
    const handleCodeExecution = () => {
-      codeSubmission(editorValue).then((res) => console.log(res));
+      codeSubmission(editorValue).then((res) => {
+         const token = res.token;
+         if (token) {
+            compilerResult(token).then((res) => setOutputDetails(res));
+         }
+      });
    };
    return (
       <section className=" p-10">
@@ -40,7 +46,10 @@ const Landing = () => {
                />
             </div>
             <div className="w-[25%] h-48">
-               <Output handleBtnClick={handleCodeExecution} />
+               <Output
+                  outPutDetails={outPutDetails}
+                  handleBtnClick={handleCodeExecution}
+               />
             </div>
          </div>
       </section>
