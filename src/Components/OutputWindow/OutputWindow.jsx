@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 
-const Output = ({ handleBtnClick, outPutDetails }) => {
+const OutputWindow = ({ handleBtnClick, outPutDetails }) => {
    const [output, setOutput] = useState(null);
    const statusCode = outPutDetails?.status?.id;
 
@@ -22,7 +22,7 @@ const Output = ({ handleBtnClick, outPutDetails }) => {
    return (
       <div className="mt-6 h-full">
          <h2 className="text-2xl font-bold pb-2">Output</h2>
-         <div className="bg-gray-800 overflow-x-scroll text-[#07bc0c] w-full h-48 p-4">
+         <div className="bg-gray-800 rounded-md overflow-x-scroll text-[#07bc0c] w-full h-48 p-4">
             <pre>{output && atob(output)}</pre>
          </div>
          <button
@@ -35,4 +35,4 @@ const Output = ({ handleBtnClick, outPutDetails }) => {
    );
 };
 
-export default Output;
+export default OutputWindow;

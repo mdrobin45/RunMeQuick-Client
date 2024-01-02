@@ -2,7 +2,7 @@ import { useState } from "react";
 import Select from "react-select";
 import { codeSubmission, compilerResult } from "../../API/ServerRequest";
 import EditorWindow from "../../Components/EditorWindow/EditorWindow";
-import Output from "../../Components/Output/Output";
+import OutputWindow from "../../Components/OutputWindow/OutputWindow";
 
 const options = [
    { value: "chocolate", label: "Chocolate" },
@@ -39,14 +39,14 @@ const Landing = () => {
             </div>
          </div>
          <div className="flex gap-3">
-            <div className="w-3/4">
+            <div className="w-2/3">
                <EditorWindow
                   editorValue={editorValue}
                   handleEditorChange={handleEditorChange}
                />
             </div>
-            <div className="w-[25%] h-48">
-               <Output
+            <div className="w-1/3 h-48">
+               <OutputWindow
                   outPutDetails={outPutDetails}
                   handleBtnClick={handleCodeExecution}
                />
