@@ -1,9 +1,9 @@
 import { useState } from "react";
 import Select from "react-select";
-import { codeSubmission, compilerResult } from "../../API/ServerRequest";
 import EditorWindow from "../../Components/EditorWindow/EditorWindow";
 import OutputWindow from "../../Components/OutputWindow/OutputWindow";
 import { languages } from "../../Constants/Languages";
+import useAPI from "../../Hooks/useAPI";
 
 const Landing = () => {
    const [editorValue, setEditorValue] = useState("");
@@ -11,6 +11,7 @@ const Landing = () => {
    const [languageId, setLanguageId] = useState(63);
    const [languageName, setLanguageName] = useState(null);
    const [isLoading, setIsLoading] = useState(false);
+   const { codeSubmission, compilerResult } = useAPI();
 
    // Get source code from editor
    const handleEditorChange = (value) => {
