@@ -24,7 +24,6 @@ const Landing = () => {
          const token = res.token;
          if (token) {
             compilerResult(token).then((res) => {
-               console.log(res);
                setOutputDetails(res);
                setIsLoading(false);
             });

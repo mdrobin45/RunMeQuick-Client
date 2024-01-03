@@ -2,6 +2,8 @@ import axios from "axios";
 
 // Get result from compile server
 export const compilerResult = async (token) => {
+   const controller = new AbortController();
+   const signal = controller.signal;
    const options = {
       method: "GET",
       url: import.meta.env.VITE_RAPID_URL + "/" + token,
@@ -16,7 +18,7 @@ export const compilerResult = async (token) => {
    };
 
    try {
-      const { data } = await axios.request(options);
+      const { data } = await axios.request(options, { signal });
       const statusCode = data.status?.id;
       if (statusCode === 1 || statusCode === 2) {
          // Processing

@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import toast from "react-hot-toast";
 
 const OutputWindow = ({ handleBtnClick, outPutDetails, isLoading }) => {
    const [output, setOutput] = useState(null);
@@ -15,12 +16,19 @@ const OutputWindow = ({ handleBtnClick, outPutDetails, isLoading }) => {
                outPutDetails?.compile_output
          );
       }
+
+      // Show toast
+      if (outPutDetails?.status_id === 3) {
+         toast.success("Execution complete");
+      } else {
+         toast.error("Compile error");
+      }
    }, [outPutDetails]);
 
    return (
       <div className="mt-6 h-full">
          <h2 className="text-2xl font-bold pb-2">Output</h2>
-         <div className="bg-gray-800 rounded-md overflow-x-scroll text-[#07bc0c] w-full h-48 p-4">
+         <div className="bg-gray-800 rounded-md overflow-x-scroll text-[#07bc0c] w-full h-[40vh] p-4">
             <pre
                className={`${
                   outPutDetails?.status_id !== 3 ? "text-red-500" : ""
