@@ -8,8 +8,9 @@ import { languages } from "../../Constants/Languages";
 const Landing = () => {
    const [editorValue, setEditorValue] = useState("");
    const [outPutDetails, setOutputDetails] = useState(null);
-   const [languageId, setLanguageId] = useState(null);
+   const [languageId, setLanguageId] = useState(63);
    const [languageName, setLanguageName] = useState(null);
+   const [isLoading, setIsLoading] = useState(false);
 
    // Get source code from editor
    const handleEditorChange = (value) => {
@@ -18,10 +19,15 @@ const Landing = () => {
 
    // Code execute by button click
    const handleCodeExecution = () => {
+      setIsLoading(true);
       codeSubmission(editorValue, languageId).then((res) => {
          const token = res.token;
          if (token) {
-            compilerResult(token).then((res) => setOutputDetails(res));
+            compilerResult(token).then((res) => {
+               console.log(res);
+               setOutputDetails(res);
+               setIsLoading(false);
+            });
          }
       });
    };
@@ -39,14 +45,12 @@ const Landing = () => {
          <div className="flex items-center gap-4">
             <div className="w-3/12">
                <Select
+                  defaultValue={languages[0]}
                   onChange={handleLanguageChange}
                   placeholder="Select Language"
                   options={languages}
                />
             </div>
-            {/* <div className="w-3/12">
-               <Select options={options} />
-            </div> */}
          </div>
          <div className="flex gap-3">
             <div className="w-2/3">
@@ -58,6 +62,7 @@ const Landing = () => {
             </div>
             <div className="w-1/3 h-48">
                <OutputWindow
+                  isLoading={isLoading}
                   outPutDetails={outPutDetails}
                   handleBtnClick={handleCodeExecution}
                />

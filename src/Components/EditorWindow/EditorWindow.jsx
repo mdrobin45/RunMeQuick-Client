@@ -8,7 +8,8 @@ const EditorWindow = ({ editorValue, handleEditorChange, lan }) => {
             <Editor
                height="80vh"
                width={`100%`}
-               language={lan || "javascript"}
+               defaultLanguage="javascript"
+               language={lan}
                value={editorValue}
                theme="vs-dark"
                defaultValue="// some comment"
