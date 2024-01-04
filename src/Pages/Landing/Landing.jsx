@@ -40,6 +40,7 @@ const Landing = () => {
       setLanguageId(id);
       setLanguageName(name);
    };
+   console.log(Date.now());
    return (
       <section className=" p-10">
          <div className="flex items-center gap-4">
