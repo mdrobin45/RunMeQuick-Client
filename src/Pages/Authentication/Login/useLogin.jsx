@@ -20,7 +20,9 @@ const useLogin = () => {
       mutationKey: ["userLogin"],
       mutationFn: (loginInfo) => userLogin(loginInfo),
       onSuccess: (data) => {
-         if (data.token) {
+         const token = data.token;
+         if (token) {
+            localStorage.setItem("access_token", token);
             toast.success("Login Successful");
             if (state !== null) {
                navigate(state.from);
@@ -34,6 +36,8 @@ const useLogin = () => {
          const errMsg = data.response.data.error;
          if (statusCode === 401) {
             toast.error(errMsg);
+         } else {
+            toast.error("Something went wrong");
          }
       },
    });
