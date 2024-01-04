@@ -18,10 +18,12 @@ const OutputWindow = ({ handleBtnClick, outPutDetails, isLoading }) => {
       }
 
       // Show toast
-      if (outPutDetails?.status_id === 3) {
-         toast.success("Execution complete");
-      } else {
-         toast.error("Compile error");
+      if (outPutDetails !== null) {
+         if (outPutDetails?.status_id === 3) {
+            toast.success("Execution complete");
+         } else {
+            toast.error("Compile error");
+         }
       }
    }, [outPutDetails]);
 
