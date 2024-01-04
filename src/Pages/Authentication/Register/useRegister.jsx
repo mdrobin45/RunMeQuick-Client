@@ -1,11 +1,11 @@
+import { useMutation } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
+import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
-import { toast } from "react-toastify";
-import { findUser, saveUserToDB } from "../../../APIs/APIs";
-import useAuth from "../../../Hooks/useAuth";
+import useAPI from "../../../Hooks/useAPI";
 
 const useRegister = () => {
-   const { registerWithEmailPassword } = useAuth();
+   const { userRegister } = useAPI();
    const navigate = useNavigate();
    const {
       register,
@@ -13,56 +13,27 @@ const useRegister = () => {
       formState: { errors },
    } = useForm();
 
+   // Server request
+   const { isPending, mutate } = useMutation({
+      mutationKey: ["userRegister"],
+      mutationFn: (userInfo) => userRegister(userInfo),
+      onSuccess: (data) => {
+         toast.success(data.message);
+         navigate("/login");
+      },
+      onError: (data) => {
+         const errMsg = data.response.data.error;
+         toast.error(errMsg);
+      },
+   });
+
    // Form submit
    const onSubmit = async (data) => {
-      // Initialize tost message
-      const toastMsg = toast.loading("");
-      toast.update(toastMsg, {
-         render: "In Progress...",
-         isLoading: true,
-      });
-
-      // Continue registration process if user not exist in database
-      findUser(data.username).then((res) => {
-         if (!res.exist) {
-            // User registration process
-            registerWithEmailPassword(data.email, data.password)
-               .then((result) => {
-                  if (result.user) {
-                     // Save user to database
-                     const userInfo = {
-                        username: data.username,
-                        email: result.user?.email,
-                     };
-                     saveUserToDB(userInfo).then((res) => console.log(res));
-
-                     // Show toast after successful registration
-                     toast.update(toastMsg, {
-                        render: "Done",
-                        type: "success",
-                        isLoading: false,
-                     });
-                     navigate("/");
-                  }
-               })
-               .catch((err) => {
-                  toast.update(toastMsg, {
-                     render: err.message,
-                     type: "error",
-                     isLoading: false,
-                  });
-               });
-         } else {
-            toast.update(toastMsg, {
-               render: "User already exist!",
-               type: "error",
-               isLoading: false,
-            });
-         }
-      });
+      mutate(data);
+      console.log(data);
    };
 
-   return { register, handleSubmit, onSubmit, errors };
+   return { register, handleSubmit, onSubmit, errors, isPending };
 };
 
 export default useRegister;

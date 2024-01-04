@@ -1,12 +1,13 @@
 import { useMutation } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
+import { useLocation, useNavigate } from "react-router-dom";
 import useAPI from "../../../Hooks/useAPI";
 
 const useLogin = () => {
    const { userLogin } = useAPI();
-   // const { state } = useLocation();
-   // const navigate = useNavigate();
+   const { state } = useLocation();
+   const navigate = useNavigate();
 
    const {
       register,
@@ -19,7 +20,14 @@ const useLogin = () => {
       mutationKey: ["userLogin"],
       mutationFn: (loginInfo) => userLogin(loginInfo),
       onSuccess: (data) => {
-         // console.log(data);
+         if (data.token) {
+            toast.success("Login Successful");
+            if (state !== null) {
+               navigate(state.from);
+            } else {
+               navigate("/");
+            }
+         }
       },
       onError: (data) => {
          const statusCode = data.response.status;
@@ -29,6 +37,7 @@ const useLogin = () => {
          }
       },
    });
+
    // Form submit
    const onSubmit = async (data) => {
       // User login process

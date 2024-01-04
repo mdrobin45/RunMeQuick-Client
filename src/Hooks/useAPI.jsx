@@ -72,7 +72,13 @@ const useAPI = () => {
       const { data } = await axiosRequest.post("/auth/login", loginDetails);
       return data;
    };
-   return { codeSubmission, compilerResult, userLogin };
+
+   // User register
+   const userRegister = async (userInfo) => {
+      const { data } = await axiosRequest.post("/auth/registration", userInfo);
+      return data;
+   };
+   return { codeSubmission, compilerResult, userLogin, userRegister };
 };
 
 export default useAPI;
