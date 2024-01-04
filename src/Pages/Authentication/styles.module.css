@@ -1,0 +1,26 @@
+.sectionWrapper {
+   @apply h-screen flex items-start justify-center flex-col;
+}
+.formWrapper {
+   @apply mx-auto w-[26rem] border rounded-md shadow-md;
+}
+.form {
+   @apply w-full px-6;
+}
+.inputWrapper {
+   @apply my-3;
+}
+.inputLabel {
+   @apply block mb-2 text-sm font-medium text-gray-900;
+}
+.input {
+   @apply bg-gray-50
+   border-gray-300 border-2 text-gray-900 text-sm rounded-lg
+   focus:border-gray-700 focus:outline-none block w-full p-2.5;
+}
+.passwordFieldWrapper {
+   @apply absolute inset-y-0 p-3 right-0 flex items-center pl-3.5;
+}
+.submitBtn {
+   @apply align-middle select-none w-full font-normal tracking-wider text-center uppercase transition-all disabled:opacity-50 disabled:shadow-none disabled:pointer-events-none py-3 px-6 rounded-lg bg-gray-700 text-white shadow-md shadow-gray-900/10 hover:shadow-lg hover:shadow-gray-900/20 focus:opacity-[0.85] focus:shadow-none active:opacity-[0.85] active:shadow-none !important;
+}

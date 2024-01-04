@@ -1,5 +1,9 @@
 import axios from "axios";
 
+const axiosRequest = axios.create({
+   baseURL: import.meta.env.VITE_SERVER_API,
+});
+
 const useAPI = () => {
    // Get result from compile server
    const compilerResult = async (token) => {
@@ -62,7 +66,13 @@ const useAPI = () => {
          console.log(err);
       }
    };
-   return { codeSubmission, compilerResult };
+
+   // User login
+   const userLogin = async (loginDetails) => {
+      const { data } = await axiosRequest.post("/auth/login", loginDetails);
+      return data;
+   };
+   return { codeSubmission, compilerResult, userLogin };
 };
 
 export default useAPI;
