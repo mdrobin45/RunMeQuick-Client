@@ -1,7 +1,10 @@
+import { Button } from "@material-tailwind/react";
 import { useState } from "react";
+import { Link } from "react-router-dom";
 import Select from "react-select";
 import EditorWindow from "../../Components/EditorWindow/EditorWindow";
 import OutputWindow from "../../Components/OutputWindow/OutputWindow";
+import UserDropdown from "../../Components/UserDropdown/UserDropdown";
 import { languages } from "../../Constants/Languages";
 import useAPI from "../../Hooks/useAPI";
 
@@ -12,7 +15,9 @@ const Landing = () => {
    const [languageName, setLanguageName] = useState(null);
    const [isLoading, setIsLoading] = useState(false);
    const { codeSubmission, compilerResult } = useAPI();
+   const [isLogOut, setIsLogOut] = useState(false);
 
+   console.log(isLogOut);
    // Get source code from editor
    const handleEditorChange = (value) => {
       setEditorValue(value);
@@ -40,10 +45,9 @@ const Landing = () => {
       setLanguageId(id);
       setLanguageName(name);
    };
-   console.log(Date.now());
    return (
       <section className=" p-10">
-         <div className="flex items-center gap-4">
+         <div className="flex items-center justify-between gap-4">
             <div className="w-3/12">
                <Select
                   defaultValue={languages[0]}
@@ -51,6 +55,17 @@ const Landing = () => {
                   placeholder="Select Language"
                   options={languages}
                />
+            </div>
+            <div>
+               {isLogOut ? (
+                  <UserDropdown setIsLogOut={setIsLogOut} />
+               ) : (
+                  <>
+                     <Link to="/login">
+                        <Button>Login</Button>
+                     </Link>
+                  </>
+               )}
             </div>
          </div>
          <div className="flex gap-3">
