@@ -32,7 +32,7 @@ const OutputWindow = ({ handleBtnClick }) => {
    return (
       <div className="mt-6 h-full">
          <h2 className="text-2xl font-bold pb-2">Output</h2>
-         <div className="bg-gray-800 rounded-md overflow-x-scroll text-[#07bc0c] w-full h-[40vh] p-4">
+         <div className="bg-gray-900 rounded-md overflow-x-scroll text-[#07bc0c] w-full h-[40vh] p-4">
             <pre
                className={`${
                   executionOutput?.status_id !== 3 ? "text-red-500" : ""

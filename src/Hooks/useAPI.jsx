@@ -84,12 +84,6 @@ const useAPI = () => {
       return data;
    };
 
-   // Save history
-   const saveHistory = async (historyData) => {
-      const { data } = await axiosRequest.post("/save-history", historyData);
-      return data;
-   };
-
    // Get history
    const getHistory = async (email) => {
       const { data } = await axiosRequest.get(`/get-history?email=${email}`);
@@ -101,7 +95,6 @@ const useAPI = () => {
       compilerResult,
       userLogin,
       userRegister,
-      saveHistory,
       getHistory,
    };
 };

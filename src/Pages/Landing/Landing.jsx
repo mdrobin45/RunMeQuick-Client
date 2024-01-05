@@ -1,5 +1,7 @@
 import { Button } from "@material-tailwind/react";
-import { useContext, useState } from "react";
+import axios from "axios";
+import { jwtDecode } from "jwt-decode";
+import { useContext, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import Select from "react-select";
 import EditorWindow from "../../Components/EditorWindow/EditorWindow";
@@ -16,7 +18,8 @@ const Landing = () => {
    const [languageName, setLanguageName] = useState(null);
    const { codeSubmission, compilerResult } = useAPI();
    const { token } = useAuth();
-   const { handleLoading } = useContext(ExecutionContext);
+   const { handleLoading, executionOutput } = useContext(ExecutionContext);
+   const [result, setResult] = useState(null);
 
    // Get source code from editor
    const handleEditorChange = (value) => {
@@ -33,6 +36,39 @@ const Landing = () => {
          }
       });
    };
+
+   useEffect(() => {
+      if (executionOutput) {
+         console.log(executionOutput);
+         if (
+            executionOutput?.stderr !== null ||
+            executionOutput?.stdout !== null ||
+            executionOutput?.compile_output !== null
+         ) {
+            setResult(
+               executionOutput?.stderr ||
+                  executionOutput?.stdout ||
+                  executionOutput?.compile_output
+            );
+         }
+
+         // Decode token
+         const decoded = jwtDecode(token);
+
+         const historyInfo = {
+            email: decoded?.email,
+            sourceCode: executionOutput?.source_code,
+            output: result,
+         };
+
+         axios
+            .post(
+               `${import.meta.env.VITE_SERVER_API}/save-history`,
+               historyInfo
+            )
+            .then((res) => console.log(res));
+      }
+   }, [executionOutput, result, token]);
 
    // Handle language changes
    const handleLanguageChange = (e) => {
