@@ -1,10 +1,14 @@
 import axios from "axios";
+import { useContext } from "react";
+import { ExecutionContext } from "../Context/ExecutionOutputProvider";
 
 const axiosRequest = axios.create({
    baseURL: import.meta.env.VITE_SERVER_API,
 });
 
 const useAPI = () => {
+   const { handleSetOutput } = useContext(ExecutionContext);
+
    // Get result from compile server
    const compilerResult = async (token) => {
       const options = {
@@ -19,16 +23,20 @@ const useAPI = () => {
             "X-RapidAPI-Host": import.meta.env.VITE_RAPID_HOST,
          },
       };
-
       try {
          const { data } = await axios.request(options);
          const statusCode = data?.status_id;
          if (statusCode === 1 || statusCode === 2) {
             // Processing
-            compilerResult(token);
+            setTimeout(() => {
+               compilerResult(token);
+            }, 2000);
             return;
+         } else {
+            if (data !== undefined) {
+               handleSetOutput(data);
+            }
          }
-         return data;
       } catch (error) {
          console.error(error);
       }
@@ -75,7 +83,27 @@ const useAPI = () => {
       const { data } = await axiosRequest.post("/auth/registration", userInfo);
       return data;
    };
-   return { codeSubmission, compilerResult, userLogin, userRegister };
+
+   // Save history
+   const saveHistory = async (historyData) => {
+      const { data } = await axiosRequest.post("/save-history", historyData);
+      return data;
+   };
+
+   // Get history
+   const getHistory = async (email) => {
+      const { data } = await axiosRequest.get(`/get-history?email=${email}`);
+      return data;
+   };
+
+   return {
+      codeSubmission,
+      compilerResult,
+      userLogin,
+      userRegister,
+      saveHistory,
+      getHistory,
+   };
 };
 
 export default useAPI;

@@ -1,22 +1,22 @@
 import { Button } from "@material-tailwind/react";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { Link } from "react-router-dom";
 import Select from "react-select";
 import EditorWindow from "../../Components/EditorWindow/EditorWindow";
 import OutputWindow from "../../Components/OutputWindow/OutputWindow";
 import UserDropdown from "../../Components/UserDropdown/UserDropdown";
 import { languages } from "../../Constants/Languages";
+import { ExecutionContext } from "../../Context/ExecutionOutputProvider";
 import useAPI from "../../Hooks/useAPI";
 import useAuth from "../../Hooks/useAuth";
 
 const Landing = () => {
    const [editorValue, setEditorValue] = useState("");
-   const [outPutDetails, setOutputDetails] = useState(null);
    const [languageId, setLanguageId] = useState(63);
    const [languageName, setLanguageName] = useState(null);
-   const [isLoading, setIsLoading] = useState(false);
    const { codeSubmission, compilerResult } = useAPI();
    const { token } = useAuth();
+   const { handleLoading } = useContext(ExecutionContext);
 
    // Get source code from editor
    const handleEditorChange = (value) => {
@@ -25,14 +25,11 @@ const Landing = () => {
 
    // Code execute by button click
    const handleCodeExecution = async () => {
-      setIsLoading(true);
+      handleLoading(true);
       codeSubmission(editorValue, languageId).then((res) => {
          const token = res.token;
          if (token) {
-            compilerResult(token).then((res) => {
-               setOutputDetails(res);
-               setIsLoading(false);
-            });
+            compilerResult(token);
          }
       });
    };
@@ -78,8 +75,8 @@ const Landing = () => {
             </div>
             <div className="w-1/3 h-48">
                <OutputWindow
-                  isLoading={isLoading}
-                  outPutDetails={outPutDetails}
+                  // isLoading={isLoading}
+                  // outPutDetails={outPutDetails}
                   handleBtnClick={handleCodeExecution}
                />
             </div>

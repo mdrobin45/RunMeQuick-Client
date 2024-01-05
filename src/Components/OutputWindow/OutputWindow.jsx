@@ -1,31 +1,33 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import toast from "react-hot-toast";
+import { ExecutionContext } from "../../Context/ExecutionOutputProvider";
 
-const OutputWindow = ({ handleBtnClick, outPutDetails, isLoading }) => {
+const OutputWindow = ({ handleBtnClick }) => {
    const [output, setOutput] = useState(null);
+   const { outputLoading, executionOutput } = useContext(ExecutionContext);
 
    useEffect(() => {
       if (
-         outPutDetails?.stderr !== null ||
-         outPutDetails?.stdout !== null ||
-         outPutDetails?.compile_output !== null
+         executionOutput?.stderr !== null ||
+         executionOutput?.stdout !== null ||
+         executionOutput?.compile_output !== null
       ) {
          setOutput(
-            outPutDetails?.stderr ||
-               outPutDetails?.stdout ||
-               outPutDetails?.compile_output
+            executionOutput?.stderr ||
+               executionOutput?.stdout ||
+               executionOutput?.compile_output
          );
       }
 
       // Show toast
-      if (outPutDetails !== null) {
-         if (outPutDetails?.status_id === 3) {
+      if (executionOutput !== null) {
+         if (executionOutput?.status_id === 3) {
             toast.success("Execution complete");
          } else {
             toast.error("Compile error");
          }
       }
-   }, [outPutDetails]);
+   }, [executionOutput]);
 
    return (
       <div className="mt-6 h-full">
@@ -33,7 +35,7 @@ const OutputWindow = ({ handleBtnClick, outPutDetails, isLoading }) => {
          <div className="bg-gray-800 rounded-md overflow-x-scroll text-[#07bc0c] w-full h-[40vh] p-4">
             <pre
                className={`${
-                  outPutDetails?.status_id !== 3 ? "text-red-500" : ""
+                  executionOutput?.status_id !== 3 ? "text-red-500" : ""
                }`}>
                {output && atob(output)}
             </pre>
@@ -42,7 +44,7 @@ const OutputWindow = ({ handleBtnClick, outPutDetails, isLoading }) => {
             onClick={handleBtnClick}
             type="button"
             className="text-white bg-gray-800 hover:bg-gray-900 focus:outline-none focus:ring-4 focus:ring-gray-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-gray-800 dark:hover:bg-gray-700 mt-4 dark:focus:ring-gray-700 dark:border-gray-700">
-            {!isLoading ? "Run and Execute" : "Processing..."}
+            {!outputLoading ? "Run and Execute" : "Processing..."}
          </button>
       </div>
    );
