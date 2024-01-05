@@ -7,6 +7,7 @@ import OutputWindow from "../../Components/OutputWindow/OutputWindow";
 import UserDropdown from "../../Components/UserDropdown/UserDropdown";
 import { languages } from "../../Constants/Languages";
 import useAPI from "../../Hooks/useAPI";
+import useAuth from "../../Hooks/useAuth";
 
 const Landing = () => {
    const [editorValue, setEditorValue] = useState("");
@@ -16,8 +17,9 @@ const Landing = () => {
    const [isLoading, setIsLoading] = useState(false);
    const { codeSubmission, compilerResult } = useAPI();
    const [isLogOut, setIsLogOut] = useState(false);
+   const { token } = useAuth();
 
-   console.log(isLogOut);
+   console.log(token);
    // Get source code from editor
    const handleEditorChange = (value) => {
       setEditorValue(value);
