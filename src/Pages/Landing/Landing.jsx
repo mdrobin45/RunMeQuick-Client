@@ -51,11 +51,11 @@ const Landing = () => {
                   executionOutput?.compile_output
             );
          }
-
          // Decode token
          const decoded = jwtDecode(token);
 
          const historyInfo = {
+            label: `History - ${executionOutput?.language?.name}`,
             email: decoded?.email,
             sourceCode: executionOutput?.source_code,
             output: result,
@@ -81,13 +81,23 @@ const Landing = () => {
    return (
       <section className=" p-10">
          <div className="flex items-center justify-between gap-4">
-            <div className="w-3/12">
-               <Select
-                  defaultValue={languages[0]}
-                  onChange={handleLanguageChange}
-                  placeholder="Select Language"
-                  options={languages}
-               />
+            <div className="flex items-center gap-4 w-full">
+               <div className="w-3/12">
+                  <Select
+                     defaultValue={languages[0]}
+                     onChange={handleLanguageChange}
+                     placeholder="Select Language"
+                     options={languages}
+                  />
+               </div>
+               <div className="w-3/12">
+                  <Select
+                     defaultValue={languages[0]}
+                     onChange={handleLanguageChange}
+                     placeholder="Select Language"
+                     options={languages}
+                  />
+               </div>
             </div>
             <div>
                {token ? (
@@ -110,11 +120,7 @@ const Landing = () => {
                />
             </div>
             <div className="w-1/3 h-48">
-               <OutputWindow
-                  // isLoading={isLoading}
-                  // outPutDetails={outPutDetails}
-                  handleBtnClick={handleCodeExecution}
-               />
+               <OutputWindow handleBtnClick={handleCodeExecution} />
             </div>
          </div>
       </section>
