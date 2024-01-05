@@ -17,7 +17,6 @@ const AuthContextProvider = ({ children }) => {
          localStorage.removeItem("access_token");
       }
    }, [token]);
-   console.log(token);
 
    const contextValue = useMemo(
       () => ({
@@ -26,6 +25,7 @@ const AuthContextProvider = ({ children }) => {
       }),
       [token]
    );
+
    return (
       <AuthContext.Provider value={contextValue}>
          {children}

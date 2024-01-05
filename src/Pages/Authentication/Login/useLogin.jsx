@@ -3,11 +3,13 @@ import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import { useLocation, useNavigate } from "react-router-dom";
 import useAPI from "../../../Hooks/useAPI";
+import useAuth from "../../../Hooks/useAuth";
 
 const useLogin = () => {
    const { userLogin } = useAPI();
    const { state } = useLocation();
    const navigate = useNavigate();
+   const { handleSetToken } = useAuth();
 
    const {
       register,
@@ -22,7 +24,7 @@ const useLogin = () => {
       onSuccess: (data) => {
          const token = data.token;
          if (token) {
-            localStorage.setItem("access_token", token);
+            handleSetToken(token);
             toast.success("Login Successful");
             if (state !== null) {
                navigate(state.from);
