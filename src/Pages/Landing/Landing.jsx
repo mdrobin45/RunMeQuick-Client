@@ -24,7 +24,7 @@ const Landing = () => {
    };
 
    // Code execute by button click
-   const handleCodeExecution = () => {
+   const handleCodeExecution = async () => {
       setIsLoading(true);
       codeSubmission(editorValue, languageId).then((res) => {
          const token = res.token;

@@ -21,17 +21,14 @@ const useAPI = () => {
       };
 
       try {
-         const { data } = await axios.request(options, {});
-         const statusCode = data.status?.id;
+         const { data } = await axios.request(options);
+         const statusCode = data?.status_id;
          if (statusCode === 1 || statusCode === 2) {
             // Processing
-            setTimeout(() => {
-               compilerResult(token);
-            }, 2000);
+            compilerResult(token);
             return;
-         } else {
-            return data;
          }
+         return data;
       } catch (error) {
          console.error(error);
       }
