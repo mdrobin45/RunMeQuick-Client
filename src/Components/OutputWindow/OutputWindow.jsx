@@ -1,33 +1,9 @@
-import { useContext, useEffect, useState } from "react";
-import toast from "react-hot-toast";
+import { useContext } from "react";
 import { ExecutionContext } from "../../Context/ExecutionOutputProvider";
 
 const OutputWindow = ({ handleBtnClick }) => {
-   const [output, setOutput] = useState(null);
-   const { outputLoading, executionOutput } = useContext(ExecutionContext);
-
-   useEffect(() => {
-      if (
-         executionOutput?.stderr !== null ||
-         executionOutput?.stdout !== null ||
-         executionOutput?.compile_output !== null
-      ) {
-         setOutput(
-            executionOutput?.stderr ||
-               executionOutput?.stdout ||
-               executionOutput?.compile_output
-         );
-      }
-
-      // Show toast
-      if (executionOutput !== null) {
-         if (executionOutput?.status_id === 3) {
-            toast.success("Execution complete");
-         } else {
-            toast.error("Compile error");
-         }
-      }
-   }, [executionOutput]);
+   const { outputLoading, executionOutput, output } =
+      useContext(ExecutionContext);
 
    return (
       <div className="mt-6 h-full">
@@ -35,7 +11,10 @@ const OutputWindow = ({ handleBtnClick }) => {
          <div className="bg-gray-900 rounded-md overflow-x-scroll text-[#07bc0c] w-full h-[40vh] p-4">
             <pre
                className={`${
-                  executionOutput?.status_id !== 3 ? "text-red-500" : ""
+                  executionOutput?.status_id !== 3 &&
+                  executionOutput?.status_id !== undefined
+                     ? "text-red-500"
+                     : ""
                }`}>
                {output && atob(output)}
             </pre>

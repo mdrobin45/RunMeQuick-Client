@@ -1,4 +1,5 @@
 import { Button } from "@material-tailwind/react";
+import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import { jwtDecode } from "jwt-decode";
 import { useContext, useEffect, useState } from "react";
@@ -16,14 +17,31 @@ const Landing = () => {
    const [editorValue, setEditorValue] = useState("");
    const [languageId, setLanguageId] = useState(63);
    const [languageName, setLanguageName] = useState(null);
-   const { codeSubmission, compilerResult } = useAPI();
+   const { codeSubmission, compilerResult, getHistory } = useAPI();
    const { token } = useAuth();
-   const { handleLoading, executionOutput } = useContext(ExecutionContext);
+   const { handleLoading, executionOutput, setOutput } =
+      useContext(ExecutionContext);
    const [result, setResult] = useState(null);
+
+   // Decode token
+   const decoded = jwtDecode(token);
+
+   // Call history api
+   const { refetch, data: history } = useQuery({
+      queryKey: ["history"],
+      queryFn: () => getHistory(decoded?.email),
+   });
 
    // Get source code from editor
    const handleEditorChange = (value) => {
       setEditorValue(value);
+   };
+
+   // Handle history change
+   const handleHistoryChange = (e) => {
+      const sourceCode = atob(e.sourceCode);
+      setEditorValue(sourceCode);
+      setOutput(e.output);
    };
 
    // Code execute by button click
@@ -39,7 +57,6 @@ const Landing = () => {
 
    useEffect(() => {
       if (executionOutput) {
-         console.log(executionOutput);
          if (
             executionOutput?.stderr !== null ||
             executionOutput?.stdout !== null ||
@@ -51,11 +68,10 @@ const Landing = () => {
                   executionOutput?.compile_output
             );
          }
-         // Decode token
-         const decoded = jwtDecode(token);
 
          const historyInfo = {
             label: `History - ${executionOutput?.language?.name}`,
+            value: executionOutput?.created_at,
             email: decoded?.email,
             sourceCode: executionOutput?.source_code,
             output: result,
@@ -68,7 +84,10 @@ const Landing = () => {
             )
             .then((res) => console.log(res));
       }
-   }, [executionOutput, result, token]);
+
+      // Refetch history
+      refetch();
+   }, [decoded?.email, executionOutput, refetch, result, token]);
 
    // Handle language changes
    const handleLanguageChange = (e) => {
@@ -92,10 +111,9 @@ const Landing = () => {
                </div>
                <div className="w-3/12">
                   <Select
-                     defaultValue={languages[0]}
-                     onChange={handleLanguageChange}
-                     placeholder="Select Language"
-                     options={languages}
+                     onChange={handleHistoryChange}
+                     placeholder="History"
+                     options={history}
                   />
                </div>
             </div>
