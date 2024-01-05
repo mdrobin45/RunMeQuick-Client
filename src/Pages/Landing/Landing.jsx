@@ -22,14 +22,20 @@ const Landing = () => {
    const { handleLoading, executionOutput, setOutput } =
       useContext(ExecutionContext);
    const [result, setResult] = useState(null);
+   const [decodeToken, setDecodeToken] = useState(null);
 
-   // Decode token
-   const decoded = jwtDecode(token);
+   useEffect(() => {
+      // Decode token
+      if (token) {
+         const decoded = jwtDecode(token);
+         setDecodeToken(decoded);
+      }
+   }, [token]);
 
    // Call history api
    const { refetch, data: history } = useQuery({
       queryKey: ["history"],
-      queryFn: () => getHistory(decoded?.email),
+      queryFn: () => getHistory(decodeToken?.email),
    });
 
    // Get source code from editor
@@ -72,22 +78,24 @@ const Landing = () => {
          const historyInfo = {
             label: `History - ${executionOutput?.language?.name}`,
             value: executionOutput?.created_at,
-            email: decoded?.email,
+            email: decodeToken?.email,
             sourceCode: executionOutput?.source_code,
             output: result,
          };
 
-         axios
-            .post(
-               `${import.meta.env.VITE_SERVER_API}/save-history`,
-               historyInfo
-            )
-            .then((res) => console.log(res));
+         if (token) {
+            axios
+               .post(
+                  `${import.meta.env.VITE_SERVER_API}/save-history`,
+                  historyInfo
+               )
+               .then((res) => console.log(res));
+         }
       }
 
       // Refetch history
       refetch();
-   }, [decoded?.email, executionOutput, refetch, result, token]);
+   }, [decodeToken?.email, executionOutput, refetch, result, token]);
 
    // Handle language changes
    const handleLanguageChange = (e) => {
