@@ -7,20 +7,23 @@ import {
    MenuList,
    Typography,
 } from "@material-tailwind/react";
+import { jwtDecode } from "jwt-decode";
 import { useState } from "react";
 import toast from "react-hot-toast";
-import useUser from "../../Hooks/useUser";
+import useAuth from "../../Hooks/useAuth";
 
-const UserDropdown = ({ setIsLogOut }) => {
+const UserDropdown = () => {
    const [isMenuOpen, setIsMenuOpen] = useState(false);
-   const { name, email } = useUser();
+   const { token, handleSetToken } = useAuth();
+
+   // Decode token
+   const decoded = jwtDecode(token);
 
    // Logout
    const handleLogOut = () => {
       const accessToken = localStorage.getItem("access_token");
       if (accessToken) {
-         localStorage.removeItem("access_token");
-         setIsLogOut(true);
+         handleSetToken();
          toast.error("You are logged out");
       }
    };
@@ -45,13 +48,13 @@ const UserDropdown = ({ setIsLogOut }) => {
                as="span"
                variant="small"
                className="font-bold text-gray-900 p-3">
-               {name ? name : ""}
+               {decoded?.name ? decoded?.name : ""}
             </Typography>
             <Typography
                as="span"
                variant="small"
                className=" text-gray-600 -mt-3 px-3">
-               {email ? email : ""}
+               {decoded?.email ? decoded?.email : ""}
             </Typography>
 
             <MenuItem

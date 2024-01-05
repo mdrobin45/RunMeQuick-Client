@@ -16,10 +16,8 @@ const Landing = () => {
    const [languageName, setLanguageName] = useState(null);
    const [isLoading, setIsLoading] = useState(false);
    const { codeSubmission, compilerResult } = useAPI();
-   const [isLogOut, setIsLogOut] = useState(false);
    const { token } = useAuth();
 
-   console.log(token);
    // Get source code from editor
    const handleEditorChange = (value) => {
       setEditorValue(value);
@@ -59,8 +57,8 @@ const Landing = () => {
                />
             </div>
             <div>
-               {isLogOut ? (
-                  <UserDropdown setIsLogOut={setIsLogOut} />
+               {token ? (
+                  <UserDropdown />
                ) : (
                   <>
                      <Link to="/login">
