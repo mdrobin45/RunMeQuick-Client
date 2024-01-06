@@ -4,19 +4,17 @@ import Select from "react-select";
 import UserDropdown from "../../../Components/UserDropdown/UserDropdown";
 import { languages } from "../../../Constants/Languages";
 import useAuth from "../../../Hooks/useAuth";
-import useLandingLogic from "../useLandingLogic";
 
-const Topbar = () => {
+const Topbar = ({ changeHandler, handleHistoryChange, history }) => {
    const { token } = useAuth();
-   const { handleLanguageChange, handleHistoryChange, history } =
-      useLandingLogic();
+   history = history.toReversed();
    return (
       <div className="flex items-center justify-between gap-4">
          <div className="flex items-center justify-between md:justify-start gap-4 w-full">
             <div className="w-2/4 md:w-3/12">
                <Select
                   defaultValue={languages[0]}
-                  onChange={handleLanguageChange}
+                  onChange={changeHandler}
                   placeholder="Select Language"
                   options={languages}
                />

@@ -8,12 +8,9 @@ import useAuth from "../../Hooks/useAuth";
 
 const useLandingLogic = () => {
    const [editorValue, setEditorValue] = useState("");
-   const [languageId, setLanguageId] = useState(63);
-   const [languageName, setLanguageName] = useState(null);
-   const { codeSubmission, compilerResult, getHistory } = useAPI();
+   const { getHistory } = useAPI();
    const { token } = useAuth();
-   const { handleLoading, executionOutput, setOutput } =
-      useContext(ExecutionContext);
+   const { executionOutput, setOutput } = useContext(ExecutionContext);
    const [result, setResult] = useState(null);
    const [decodeToken, setDecodeToken] = useState(null);
 
@@ -25,7 +22,7 @@ const useLandingLogic = () => {
       }
    }, [token]);
 
-   // Call history api
+   // Get user history
    const { refetch, data: history = [] } = useQuery({
       queryKey: ["userHistory"],
       queryFn: () => getHistory(decodeToken?.email),
@@ -43,16 +40,16 @@ const useLandingLogic = () => {
       setOutput(e.output);
    };
 
-   // Code execute by button click
-   const handleCodeExecution = async () => {
-      handleLoading(true);
-      codeSubmission(editorValue, languageId).then((res) => {
-         const token = res.token;
-         if (token) {
-            compilerResult(token);
-         }
-      });
-   };
+   // // Code execute by button click
+   // const handleCodeExecution = async () => {
+   //    handleLoading(true);
+   //    codeSubmission(editorValue, languageId).then((res) => {
+   //       const token = res.token;
+   //       if (token) {
+   //          compilerResult(token);
+   //       }
+   //    });
+   // };
 
    useEffect(() => {
       if (executionOutput) {
@@ -90,22 +87,18 @@ const useLandingLogic = () => {
       refetch();
    }, [decodeToken?.email, executionOutput, refetch, result, token]);
 
-   // Handle language changes
-   const handleLanguageChange = (e) => {
-      const id = e.id;
-      const name = e.value;
+   // // Handle language changes
+   // const handleLanguageChange = (e) => {
+   //    const id = e.id;
+   //    const name = e.value;
 
-      setLanguageId(id);
-      setLanguageName(name);
-   };
-
+   //    setLanguageId(id);
+   //    setLanguageName(name);
+   // };
    return {
       history,
       editorValue,
-      languageName,
-      handleLanguageChange,
       handleHistoryChange,
-      handleCodeExecution,
       handleEditorChange,
    };
 };

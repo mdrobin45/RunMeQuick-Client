@@ -30,7 +30,6 @@ const useRegister = () => {
    // Form submit
    const onSubmit = async (data) => {
       mutate(data);
-      console.log(data);
    };
 
    return { register, handleSubmit, onSubmit, errors, isPending };
