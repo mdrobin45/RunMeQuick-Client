@@ -33,8 +33,8 @@ const Landing = () => {
    }, [token]);
 
    // Call history api
-   const { refetch, data: history } = useQuery({
-      queryKey: ["history"],
+   const { refetch, data: history = [] } = useQuery({
+      queryKey: ["userHistory"],
       queryFn: () => getHistory(decodeToken?.email),
    });
 
