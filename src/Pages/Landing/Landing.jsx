@@ -8,9 +8,9 @@ import { ExecutionContext } from "../../Context/ExecutionOutputProvider";
 import useAPI from "../../Hooks/useAPI";
 import useAuth from "../../Hooks/useAuth";
 import Topbar from "./Topbar/Topbar";
+import styles from "./styles.module.css";
 
 const Landing = () => {
-   // const { editorValue } = useLandingLogic();
    const { codeSubmission, compilerResult } = useAPI();
    const { handleLoading } = useContext(ExecutionContext);
    const [languageId, setLanguageId] = useState(63);
@@ -32,25 +32,25 @@ const Landing = () => {
    };
 
    useEffect(() => {
-      // Decode token
+      // Decode access token
       if (token) {
          const decoded = jwtDecode(token);
          setDecodeToken(decoded);
       }
    }, [token]);
 
-   // Get user history
+   // Get user history from database
    const { refetch, data: history = [] } = useQuery({
       queryKey: ["userHistory"],
       queryFn: () => getHistory(decodeToken?.email),
    });
 
-   // Get source code from editor
+   // Get source code from editor on change
    const handleEditorChange = (value) => {
       setEditorValue(value);
    };
 
-   // Handle history change
+   // Handle history selector change and get history value
    const handleHistoryChange = (e) => {
       const sourceCode = atob(e.sourceCode);
       setEditorValue(sourceCode);
@@ -70,6 +70,7 @@ const Landing = () => {
 
    useEffect(() => {
       if (executionOutput) {
+         // Handle execution error
          if (
             executionOutput?.stderr !== null ||
             executionOutput?.stdout !== null ||
@@ -82,6 +83,7 @@ const Landing = () => {
             );
          }
 
+         // Create history object for store database
          const historyInfo = {
             label: `History - ${executionOutput?.language?.name}`,
             value: Date.now(),
@@ -90,6 +92,7 @@ const Landing = () => {
             output: result,
          };
 
+         // Server request for store history
          if (token) {
             axios
                .post(
@@ -100,26 +103,26 @@ const Landing = () => {
          }
       }
 
-      // Refetch history
+      // Refetch history when execute complete
       refetch();
    }, [decodeToken?.email, executionOutput, refetch, result, token]);
 
    return (
-      <section className=" p-4 md:p-6 lg:p-10">
+      <section className={styles.mainWrapper}>
          <Topbar
             handleHistoryChange={handleHistoryChange}
             history={history}
             changeHandler={handleLanguageChange}
          />
-         <div className="flex flex-col md:flex-row gap-3">
-            <div className="w-full md:w-2/3">
+         <div className={styles.windowWrapper}>
+            <div className={styles.editorWrapper}>
                <EditorWindow
                   editorValue={editorValue}
                   handleEditorChange={handleEditorChange}
                   lan={languageName}
                />
             </div>
-            <div className="w-full md:w-1/3 h-48">
+            <div className={styles.outputWrapper}>
                <OutputWindow handleBtnClick={handleCodeExecution} />
             </div>
          </div>

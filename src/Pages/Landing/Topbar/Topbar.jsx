@@ -4,14 +4,15 @@ import Select from "react-select";
 import UserDropdown from "../../../Components/UserDropdown/UserDropdown";
 import { languages } from "../../../Constants/Languages";
 import useAuth from "../../../Hooks/useAuth";
+import styles from "./styles.module.css";
 
 const Topbar = ({ changeHandler, handleHistoryChange, history }) => {
    const { token } = useAuth();
    history = history.toReversed();
    return (
-      <div className="flex items-center justify-between gap-4">
-         <div className="flex items-center justify-between md:justify-start gap-4 w-full">
-            <div className="w-2/4 md:w-3/12">
+      <div className={styles.topbarMainWrapper}>
+         <div className={styles.dropdownWrapper}>
+            <div className={styles.selectElement}>
                <Select
                   defaultValue={languages[0]}
                   onChange={changeHandler}
@@ -19,7 +20,7 @@ const Topbar = ({ changeHandler, handleHistoryChange, history }) => {
                   options={languages}
                />
             </div>
-            <div className="w-2/4 md:w-3/12">
+            <div className={styles.selectElement}>
                <Select
                   onChange={handleHistoryChange}
                   placeholder="History"

@@ -1,0 +1,9 @@
+.editorMainWrapper {
+   @apply mt-6 rounded-md overflow-hidden h-full;
+}
+.editorTitle {
+   @apply text-2xl font-bold pb-2;
+}
+.editorWrapper {
+   @apply rounded-md overflow-hidden;
+}

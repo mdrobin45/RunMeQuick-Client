@@ -1,0 +1,12 @@
+.mainWrapper {
+   @apply p-4 md:p-6 lg:p-10;
+}
+.windowWrapper {
+   @apply flex flex-col md:flex-row gap-3;
+}
+.editorWrapper {
+   @apply w-full md:w-2/3;
+}
+.outputWrapper {
+   @apply w-full md:w-1/3 h-48;
+}
