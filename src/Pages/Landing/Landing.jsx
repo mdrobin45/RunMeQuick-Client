@@ -106,10 +106,10 @@ const Landing = () => {
       setLanguageName(name);
    };
    return (
-      <section className=" p-10">
+      <section className=" p-4 md:p-6 lg:p-10">
          <div className="flex items-center justify-between gap-4">
-            <div className="flex items-center gap-4 w-full">
-               <div className="w-3/12">
+            <div className="flex items-center justify-between md:justify-start gap-4 w-full">
+               <div className="w-2/4 md:w-3/12">
                   <Select
                      defaultValue={languages[0]}
                      onChange={handleLanguageChange}
@@ -117,7 +117,7 @@ const Landing = () => {
                      options={languages}
                   />
                </div>
-               <div className="w-3/12">
+               <div className="w-2/4 md:w-3/12">
                   <Select
                      onChange={handleHistoryChange}
                      placeholder="History"
@@ -137,15 +137,15 @@ const Landing = () => {
                )}
             </div>
          </div>
-         <div className="flex gap-3">
-            <div className="w-2/3">
+         <div className="flex flex-col md:flex-row gap-3">
+            <div className="w-full md:w-2/3">
                <EditorWindow
                   lan={languageName}
                   editorValue={editorValue}
                   handleEditorChange={handleEditorChange}
                />
             </div>
-            <div className="w-1/3 h-48">
+            <div className="w-full md:w-1/3 h-48">
                <OutputWindow handleBtnClick={handleCodeExecution} />
             </div>
          </div>
