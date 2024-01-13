@@ -35,6 +35,7 @@ const Landing = () => {
       setSelectedLanguageLabel(label);
    };
 
+   // Load history from session storage instant of page load
    useEffect(() => {
       const sessionHistory = sessionStorage.getItem("history");
       if (sessionHistory) {
@@ -42,8 +43,13 @@ const Landing = () => {
       }
    }, []);
 
+   // Save history in session storage
    useEffect(() => {
-      // Decode access token
+      sessionStorage.setItem("history", JSON.stringify(historyArray));
+   }, [historyArray]);
+
+   // Decode access token
+   useEffect(() => {
       if (token) {
          const decoded = jwtDecode(token);
          setDecodeToken(decoded);
@@ -60,20 +66,23 @@ const Landing = () => {
       queryFn: () => getHistory(decodeToken?.email),
    });
 
-   // Load history instant of page load
+   // Load history from database for logged in user instant of page load
    useEffect(() => {
       if (!dbHistory.length) {
          refetchHistory();
       }
    }, [dbHistory.length, refetchHistory, isFetching]);
 
+   // If user logged in history will fetch from db otherwise from session
    useEffect(() => {
       if (token) {
          setHistory(dbHistory);
       } else {
          let sessionHistory = sessionStorage.getItem("history");
-         sessionHistory = JSON.parse(sessionHistory);
-         setHistory(sessionHistory);
+         if (sessionHistory) {
+            sessionHistory = JSON.parse(sessionHistory);
+            setHistory(sessionHistory);
+         }
       }
    }, [dbHistory, token, historyArray]);
 
@@ -128,8 +137,6 @@ const Landing = () => {
                         refetchHistory();
                      }
                   });
-            } else {
-               sessionStorage.setItem("history", JSON.stringify(historyArray));
             }
          })
          .catch((err) => {
