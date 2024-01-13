@@ -143,6 +143,12 @@ const Landing = () => {
          })
          .catch((err) => {
             if (err) {
+               if (err.response.status === 404) {
+                  setOutput({
+                     output: btoa("An error occurred"),
+                     isError: true,
+                  });
+               }
                handleLoading(false);
             }
          });

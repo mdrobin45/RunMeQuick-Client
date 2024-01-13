@@ -12,7 +12,7 @@ export const languages = [
       value: "ruby",
    },
    {
-      label: "Rust",
-      value: "rust",
+      label: "Go",
+      value: "go",
    },
 ];

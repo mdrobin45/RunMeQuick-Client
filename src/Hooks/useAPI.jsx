@@ -5,7 +5,6 @@ const axiosRequest = axios.create({
 });
 
 const useAPI = () => {
-   const controller = new AbortController();
    // User login
    const userLogin = async (loginDetails) => {
       const { data } = await axiosRequest.post("/auth/login", loginDetails);
@@ -26,18 +25,8 @@ const useAPI = () => {
 
    // Compiler API call
    const codeCompiler = async (language, code) => {
-      const { data } = await axiosRequest.post(
-         "/compiler",
-         { code, language },
-         { signal: controller.signal }
-      );
+      const { data } = await axiosRequest.post("/compiler", { code, language });
       return data;
-   };
-
-   // Cancel handler
-   const cancelHandler = () => {
-      controller.abort();
-      console.log("cancelled");
    };
 
    return {
@@ -45,7 +34,6 @@ const useAPI = () => {
       userRegister,
       getHistory,
       codeCompiler,
-      cancelHandler,
    };
 };
 
