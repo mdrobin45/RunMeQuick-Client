@@ -45,7 +45,9 @@ const Landing = () => {
 
    // Save history in session storage
    useEffect(() => {
-      sessionStorage.setItem("history", JSON.stringify(historyArray));
+      if (historyArray.length !== 0) {
+         sessionStorage.setItem("history", JSON.stringify(historyArray));
+      }
    }, [historyArray]);
 
    // Decode access token
