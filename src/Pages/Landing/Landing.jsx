@@ -11,24 +11,25 @@ import Topbar from "./Topbar/Topbar";
 import styles from "./styles.module.css";
 
 const Landing = () => {
-   const { codeSubmission, compilerResult, codeCompiler } = useAPI();
+   const { codeCompiler } = useAPI();
    const { handleLoading } = useContext(ExecutionContext);
-   const [languageValue, setLanguageValue] = useState("");
-   const [languageName, setLanguageName] = useState(null);
+   const [selectedLanguage, setSelectedLanguage] = useState("javascript");
+   const [selectedLanguageLabel, setSelectedLanguageLabel] =
+      useState("javascript");
    const [editorValue, setEditorValue] = useState("");
    const { getHistory } = useAPI();
    const { token } = useAuth();
-   const { executionOutput, setOutput } = useContext(ExecutionContext);
-   const [result, setResult] = useState(null);
+   const [output, setOutput] = useState({});
    const [decodeToken, setDecodeToken] = useState(null);
 
    // Handle language changes
    const handleLanguageChange = (e) => {
       const language = e.value;
-      const name = e.value;
+      const label = e.label;
 
-      setLanguageValue(language);
-      setLanguageName(name);
+      // setLanguageValue(language);
+      setSelectedLanguage(language);
+      setSelectedLanguageLabel(label);
    };
 
    useEffect(() => {
@@ -40,7 +41,7 @@ const Landing = () => {
    }, [token]);
 
    // Get user history from database
-   const { refetch, data: history = [] } = useQuery({
+   const { refetch: refetchHistory, data: history = [] } = useQuery({
       queryKey: ["userHistory"],
       queryFn: () => getHistory(decodeToken?.email),
    });
@@ -60,53 +61,47 @@ const Landing = () => {
    // Code execute by button click
    const handleCodeExecution = async () => {
       handleLoading(true);
-      // codeSubmission(editorValue, languageValue).then((res) => {
-      //    const token = res.token;
-      //    if (token) {
-      //       compilerResult(token);
-      //    }
-      // });
-      codeCompiler(languageValue, editorValue).then((res) => setOutput(res));
+      codeCompiler(selectedLanguage, editorValue)
+         .then((res) => {
+            handleLoading(false);
+
+            if (res.stdout) {
+               setOutput({ output: res.stdout, isError: false });
+            } else {
+               setOutput({ output: res.stderr, isError: true });
+            }
+
+            // Create history object for store database
+            const historyInfo = {
+               label: `History - ${selectedLanguageLabel}`,
+               value: Date.now(),
+               email: decodeToken?.email,
+               sourceCode: btoa(editorValue),
+               output: res.stdout
+                  ? { output: res.stdout, isError: false }
+                  : { output: res.stderr, isError: true },
+            };
+
+            // Server request for store history
+            if (token && Object.keys(output).length !== 0) {
+               axios
+                  .post(
+                     `${import.meta.env.VITE_SERVER_API}/save-history`,
+                     historyInfo
+                  )
+                  .then((res) => {
+                     if (res) {
+                        refetchHistory();
+                     }
+                  });
+            }
+         })
+         .catch((err) => {
+            if (err) {
+               handleLoading(false);
+            }
+         });
    };
-
-   useEffect(() => {
-      if (executionOutput) {
-         // Handle execution error
-         // if (
-         //    executionOutput?.stderr !== null ||
-         //    executionOutput?.stdout !== null ||
-         //    executionOutput?.compile_output !== null
-         // ) {
-         //    setResult(
-         //       executionOutput?.stderr ||
-         //          executionOutput?.stdout ||
-         //          executionOutput?.compile_output
-         //    );
-         // }
-
-         // Create history object for store database
-         const historyInfo = {
-            label: `History - ${executionOutput?.language?.name}`,
-            value: Date.now(),
-            email: decodeToken?.email,
-            sourceCode: executionOutput?.source_code,
-            output: result,
-         };
-
-         // Server request for store history
-         if (token) {
-            axios
-               .post(
-                  `${import.meta.env.VITE_SERVER_API}/save-history`,
-                  historyInfo
-               )
-               .then((res) => console.log(res));
-         }
-      }
-
-      // Refetch history when execute complete
-      refetch();
-   }, [decodeToken?.email, executionOutput, refetch, result, token]);
 
    return (
       <section className={styles.mainWrapper}>
@@ -120,11 +115,14 @@ const Landing = () => {
                <EditorWindow
                   editorValue={editorValue}
                   handleEditorChange={handleEditorChange}
-                  lan={languageName}
+                  lan={selectedLanguage}
                />
             </div>
             <div className={styles.outputWrapper}>
-               <OutputWindow handleBtnClick={handleCodeExecution} />
+               <OutputWindow
+                  output={output}
+                  handleBtnClick={handleCodeExecution}
+               />
             </div>
          </div>
       </section>

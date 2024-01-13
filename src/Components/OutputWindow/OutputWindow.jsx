@@ -2,22 +2,16 @@ import { useContext } from "react";
 import { ExecutionContext } from "../../Context/ExecutionOutputProvider";
 import styles from "./styles.module.css";
 
-const OutputWindow = ({ handleBtnClick }) => {
-   const { outputLoading, executionOutput, output } =
-      useContext(ExecutionContext);
+const OutputWindow = ({ handleBtnClick, output }) => {
+   const { outputLoading } = useContext(ExecutionContext);
 
+   console.log();
    return (
       <div className={styles.outputMainWrapper}>
          <h2 className={styles.outputTitle}>Output</h2>
          <div className={styles.outputWrapper}>
-            <pre
-               className={`${
-                  executionOutput?.status_id !== 3 &&
-                  executionOutput?.status_id !== undefined
-                     ? "text-red-500"
-                     : ""
-               }`}>
-               {output && output}
+            <pre className={output?.isError ? "text-red-500" : ""}>
+               {output?.output !== undefined ? atob(output.output) : ""}
             </pre>
          </div>
          <button
