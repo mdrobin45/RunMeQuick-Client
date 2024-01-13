@@ -2,6 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import { jwtDecode } from "jwt-decode";
 import { useContext, useEffect, useState } from "react";
+import toast from "react-hot-toast";
 import EditorWindow from "../../Components/EditorWindow/EditorWindow";
 import OutputWindow from "../../Components/OutputWindow/OutputWindow";
 import { ExecutionContext } from "../../Context/ExecutionOutputProvider";
@@ -21,6 +22,8 @@ const Landing = () => {
    const { token } = useAuth();
    const [output, setOutput] = useState({});
    const [decodeToken, setDecodeToken] = useState(null);
+   const [history, setHistory] = useState([]);
+   const [historyArray, setHistoryArray] = useState([]);
 
    // Handle language changes
    const handleLanguageChange = (e) => {
@@ -33,6 +36,13 @@ const Landing = () => {
    };
 
    useEffect(() => {
+      const sessionHistory = sessionStorage.getItem("history");
+      if (sessionHistory) {
+         setHistoryArray(JSON.parse(sessionHistory));
+      }
+   }, []);
+
+   useEffect(() => {
       // Decode access token
       if (token) {
          const decoded = jwtDecode(token);
@@ -41,10 +51,31 @@ const Landing = () => {
    }, [token]);
 
    // Get user history from database
-   const { refetch: refetchHistory, data: history = [] } = useQuery({
+   const {
+      isFetching,
+      refetch: refetchHistory,
+      data: dbHistory = [],
+   } = useQuery({
       queryKey: ["userHistory"],
       queryFn: () => getHistory(decodeToken?.email),
    });
+
+   // Load history instant of page load
+   useEffect(() => {
+      if (!dbHistory.length) {
+         refetchHistory();
+      }
+   }, [dbHistory.length, refetchHistory, isFetching]);
+
+   useEffect(() => {
+      if (token) {
+         setHistory(dbHistory);
+      } else {
+         let sessionHistory = sessionStorage.getItem("history");
+         sessionHistory = JSON.parse(sessionHistory);
+         setHistory(sessionHistory);
+      }
+   }, [dbHistory, token, historyArray]);
 
    // Get source code from editor on change
    const handleEditorChange = (value) => {
@@ -67,8 +98,10 @@ const Landing = () => {
 
             if (res.stdout) {
                setOutput({ output: res.stdout, isError: false });
+               toast.success("Execution complete");
             } else {
                setOutput({ output: res.stderr, isError: true });
+               toast.error("Execution failed");
             }
 
             // Create history object for store database
@@ -81,6 +114,7 @@ const Landing = () => {
                   ? { output: res.stdout, isError: false }
                   : { output: res.stderr, isError: true },
             };
+            setHistoryArray((prev) => [...prev, historyInfo]);
 
             // Server request for store history
             if (token && Object.keys(output).length !== 0) {
@@ -94,6 +128,8 @@ const Landing = () => {
                         refetchHistory();
                      }
                   });
+            } else {
+               sessionStorage.setItem("history", JSON.stringify(historyArray));
             }
          })
          .catch((err) => {
