@@ -17,7 +17,7 @@ const OutputWindow = ({ handleBtnClick }) => {
                      ? "text-red-500"
                      : ""
                }`}>
-               {output && atob(output)}
+               {output && output}
             </pre>
          </div>
          <button

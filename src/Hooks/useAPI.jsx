@@ -90,12 +90,19 @@ const useAPI = () => {
       return data;
    };
 
+   // Compiler API call
+   const codeCompiler = async (language, code) => {
+      const { data } = await axiosRequest.post("/compiler", { code, language });
+      return data;
+   };
+
    return {
       codeSubmission,
       compilerResult,
       userLogin,
       userRegister,
       getHistory,
+      codeCompiler,
    };
 };
 

@@ -11,9 +11,9 @@ import Topbar from "./Topbar/Topbar";
 import styles from "./styles.module.css";
 
 const Landing = () => {
-   const { codeSubmission, compilerResult } = useAPI();
+   const { codeSubmission, compilerResult, codeCompiler } = useAPI();
    const { handleLoading } = useContext(ExecutionContext);
-   const [languageId, setLanguageId] = useState(63);
+   const [languageValue, setLanguageValue] = useState("");
    const [languageName, setLanguageName] = useState(null);
    const [editorValue, setEditorValue] = useState("");
    const { getHistory } = useAPI();
@@ -24,10 +24,10 @@ const Landing = () => {
 
    // Handle language changes
    const handleLanguageChange = (e) => {
-      const id = e.id;
+      const language = e.value;
       const name = e.value;
 
-      setLanguageId(id);
+      setLanguageValue(language);
       setLanguageName(name);
    };
 
@@ -60,28 +60,29 @@ const Landing = () => {
    // Code execute by button click
    const handleCodeExecution = async () => {
       handleLoading(true);
-      codeSubmission(editorValue, languageId).then((res) => {
-         const token = res.token;
-         if (token) {
-            compilerResult(token);
-         }
-      });
+      // codeSubmission(editorValue, languageValue).then((res) => {
+      //    const token = res.token;
+      //    if (token) {
+      //       compilerResult(token);
+      //    }
+      // });
+      codeCompiler(languageValue, editorValue).then((res) => setOutput(res));
    };
 
    useEffect(() => {
       if (executionOutput) {
          // Handle execution error
-         if (
-            executionOutput?.stderr !== null ||
-            executionOutput?.stdout !== null ||
-            executionOutput?.compile_output !== null
-         ) {
-            setResult(
-               executionOutput?.stderr ||
-                  executionOutput?.stdout ||
-                  executionOutput?.compile_output
-            );
-         }
+         // if (
+         //    executionOutput?.stderr !== null ||
+         //    executionOutput?.stdout !== null ||
+         //    executionOutput?.compile_output !== null
+         // ) {
+         //    setResult(
+         //       executionOutput?.stderr ||
+         //          executionOutput?.stdout ||
+         //          executionOutput?.compile_output
+         //    );
+         // }
 
          // Create history object for store database
          const historyInfo = {
