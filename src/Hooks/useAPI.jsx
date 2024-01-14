@@ -29,11 +29,18 @@ const useAPI = () => {
       return data;
    };
 
+   // Cancel execution
+   const cancelExecution = async () => {
+      const { data } = await axiosRequest.post("/compiler/cancel", {});
+      return data;
+   };
+
    return {
       userLogin,
       userRegister,
       getHistory,
       codeCompiler,
+      cancelExecution,
    };
 };
 

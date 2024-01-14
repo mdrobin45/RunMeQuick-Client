@@ -5,8 +5,12 @@ import styles from "./styles.module.css";
 
 const OutputWindow = ({ handleBtnClick, output }) => {
    const { outputLoading } = useContext(ExecutionContext);
-   const { cancelHandler } = useAPI();
+   const { cancelExecution } = useAPI();
 
+   // Handle cancel execution
+   const handleCancelExecution = () => {
+      cancelExecution().then((res) => console.log(res));
+   };
    return (
       <div className={styles.outputMainWrapper}>
          <h2 className={styles.outputTitle}>Output</h2>
@@ -23,7 +27,7 @@ const OutputWindow = ({ handleBtnClick, output }) => {
          </button>
          <button
             disabled={outputLoading ? false : true}
-            onClick={cancelHandler}
+            onClick={handleCancelExecution}
             type="button"
             className={`text-white ${
                !outputLoading ? "opacity-20" : ""
