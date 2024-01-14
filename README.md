@@ -1,8 +1,45 @@
-# React + Vite
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## RumMeQuick Frontend
 
-Currently, two official plugins are available:
+This is the frontend of `RunMeQuick` project. You will find the backend [here](https://github.com/mdrobin45/RunMeQuick-Server)
+## Run Locally
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+Clone the project
+
+```bash
+git clone https://github.com/mdrobin45/RunMeQuick-Client.git
+```
+
+Go to the project directory
+
+```bash
+cd RunMeQuick-Client
+```
+
+Install dependencies
+
+```bash
+npm install
+```
+
+
+#### Environment Variables
+
+To run this project, you will need to add the following environment variables to your `.env` file
+
+`VITE_SERVER_API`
+
+For easier to setup environment variables, you can just rename `.env.development` file to `.env` from root of the project directory.
+
+**Please Note:** You may need to edit `VITE_SERVER_API` from `.env.development` file base on your port of running server.
+
+#### Start Server
+
+Open project folder in terminal and run following command
+
+```bash
+npm run dev
+```
+## Used Technology
+
+**Technologies:** React, React Router Dom v6, TailwindCSS
